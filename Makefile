@@ -13,12 +13,14 @@ BUILD := $(CURDIR)/build/$(NAME)
 
 
 run: build
-	$(BUILD)
+	@echo "==> Running ${BUILD}..."
+	@$(BUILD) --consul=123
 
 .PHONY: build
 build:
 	@echo "==> Building ${PROJECT}..."
-	@PROJECT=$(PROJECT) \
+	@env -i \
+	PROJECT=$(PROJECT) \
 	VERSION=$(VERSION) \
 	NAME=$(NAME) \
 	scripts/compile.sh

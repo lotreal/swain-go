@@ -26,7 +26,6 @@ LDFLAGS="$LDFLAGS -X main.Version=${VERSION}"
 LDFLAGS="$LDFLAGS -X main.GitCommit=${GIT_COMMIT}${GIT_DIRTY}"
 
 go build \
-   -a \
    -ldflags="$LDFLAGS" \
    -o="build/${NAME}" \
    .

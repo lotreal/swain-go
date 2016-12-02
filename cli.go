@@ -1,8 +1,10 @@
 package main
 
 import (
-	"fmt"
+	// "errors"
+	"flag"
 	"io"
+	"log"
 	"os"
 	"sync"
 )
@@ -36,10 +38,39 @@ func NewCLI(out, err io.Writer) *CLI {
 // Run accepts a slice of arguments and returns an int representing the exit
 // status from the command.
 func (cli *CLI) Run(args []string) int {
-	// cli.lock()
-	// defer cli.Unlock()
+	cli.Lock()
+	defer cli.Unlock()
 
-	fmt.Printf("%#v\n", cli)
-	fmt.Printf("%#v\n", args)
+	cli.ParseFlags(args[1:])
+	log.Printf("%#v\n", cli)
+	log.Printf("%#v\n", args)
 	return 0
+}
+
+func (cli *CLI) ParseFlags(args []string) {
+	// Parse the flags and options
+	flags := flag.NewFlagSet(Name, flag.ContinueOnError)
+	log.Printf("%#v\n", flags)
+	log.Printf("%T\n", flags)
+	flags.SetOutput(cli.errStream)
+
+	log.Printf("%T\n", (funcVar)(func(s string) error {
+		log.Printf("%#v\n", s)
+		// return errors.New("error decoding config")
+		return nil
+	}))
+
+	flags.Var((funcVar)(func(s string) error {
+		log.Printf("%#v\n", s)
+		// return errors.New("error decoding config")
+		return nil
+	}), "consul", "")
+
+	flags.Parse(args)
+
+	// Error if extra arguments are present
+	args = flags.Args()
+	if len(args) > 0 {
+		log.Printf("cli: extra args: %q", args)
+	}
 }
